@@ -20,17 +20,6 @@ pub fn kismet_hooks() -> &'static [(&'static str, ExecFn)] {
 }
 
 pub unsafe fn init_hooks() -> Result<()> {
-    if let Ok(server_name) = &globals().resolution.server_name {
-        unsafe {
-            GetServerName
-                .initialize(
-                    std::mem::transmute(server_name.get_server_name.0),
-                    detour_get_server_name,
-                )?
-                .enable()?;
-        }
-    }
-
     if let Ok(server_mods) = &globals().resolution.server_mods {
         unsafe {
             USessionHandlingFSDFillSessionSetting
@@ -43,22 +32,6 @@ pub unsafe fn init_hooks() -> Result<()> {
     }
 
     Ok(())
-}
-
-fn detour_get_server_name(a: *const c_void, b: *const c_void) -> *const ue::FString {
-    unsafe {
-        let name = GetServerName.call(a, b).cast_mut().as_mut().unwrap();
-
-        let mut new_name = widestring::U16String::new();
-        new_name.push_slice([0x5b, 0x4d, 0x4f, 0x44, 0x44, 0x45, 0x44, 0x5d, 0x20]);
-        new_name.push_slice(name.as_slice());
-
-        name.clear();
-        name.extend_from_slice(new_name.as_slice());
-        name.push(0);
-
-        name
-    }
 }
 
 fn detour_fill_session_setting(

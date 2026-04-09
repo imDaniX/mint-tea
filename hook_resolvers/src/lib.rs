@@ -159,7 +159,6 @@ impl_collector! {
     #[cfg_attr(feature = "serde-resolvers", derive(Serialize, Deserialize))]
     pub struct HookResolution {
         pub disable: Disable,
-        pub server_name: ServerNameResolution,
         pub server_mods: ServerModsResolution,
         pub save_game: SaveGameResolution,
         pub core: CoreResolution,
