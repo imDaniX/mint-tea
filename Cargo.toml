@@ -37,6 +37,10 @@ license.workspace = true
 version.workspace = true
 edition.workspace = true
 
+[[bin]]
+name = "mint-tea"
+path = "src/main.rs"
+
 [features]
 default = ["hook"]
 hook = ["dep:hook"]
